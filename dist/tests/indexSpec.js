@@ -41,6 +41,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var supertest_1 = __importDefault(require("supertest"));
 var index_1 = __importDefault(require("../index"));
+var fs_1 = __importDefault(require("fs"));
+var path_1 = __importDefault(require("path"));
+var resizer_1 = require("../utilities/resizer");
 var request = (0, supertest_1.default)(index_1.default);
 describe('Test endpoint', function () {
     it('should get API to resize image successfully.', function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -75,6 +78,32 @@ describe('Test endpoint', function () {
                 case 1:
                     response = _a.sent();
                     expect(response.status).toBe(404);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+});
+describe('Test resize image function', function () {
+    var sourceImageFolder = 'source-images';
+    var outputImageFolder = 'resized-images';
+    var fileName = 'fjord';
+    var widthQuery = 333;
+    var heightQuery = 444;
+    afterEach(function () {
+        var outputImagePath = path_1.default.join(outputImageFolder, "".concat(fileName, "-").concat(widthQuery, "-").concat(heightQuery, ".jpg}"));
+        if (fs_1.default.existsSync(outputImagePath)) {
+            fs_1.default.unlinkSync(outputImagePath);
+        }
+    });
+    it('should resize image and return the output image path successfully.', function () { return __awaiter(void 0, void 0, void 0, function () {
+        var result;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, (0, resizer_1.resizeImage)(fileName, widthQuery, heightQuery, sourceImageFolder, outputImageFolder)];
+                case 1:
+                    result = _a.sent();
+                    expect(result).toEqual(path_1.default.join(outputImageFolder, "".concat(fileName, "-").concat(widthQuery, "-").concat(heightQuery, ".jpg")));
+                    expect(fs_1.default.existsSync(result)).toBe(true);
                     return [2 /*return*/];
             }
         });
